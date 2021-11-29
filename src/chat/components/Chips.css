@@ -1,0 +1,17 @@
+.chip {
+  height: 50px;
+  width: 100px;
+  border-radius: 20%;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+  font-style: normal;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 40;
+  background-color: rgb(160, 137, 137);
+  color: whitesmoke;
+  border-right: 20px;
+  padding: 2px;
+  margin-left: 20px;
+  margin-bottom: 5px;
+}

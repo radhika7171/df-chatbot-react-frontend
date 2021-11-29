@@ -14,7 +14,7 @@ const Chips = (props) => {
           key={opt.text}
           onClick={() => {
             window.open(opt.link);
-            // actionProvider.handleMessage(opt.text);
+            actionProvider.handleMessage(opt.text);
           }}
         >
           {opt.text}

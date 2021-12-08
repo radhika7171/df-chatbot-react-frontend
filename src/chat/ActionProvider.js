@@ -14,7 +14,7 @@ class ActionProvider {
     this.setState = setStateFunc;
     this.createClientMessage = createClientMessage;
     this.stateRef = stateRef;
-    this.createCustomMessage = createCustomMessage;
+    this.createClientMessage = createCustomMessage;
   }
 
   handleMessage(message) {
@@ -22,6 +22,13 @@ class ActionProvider {
     const agentId = "a9ef8e65-f0b1-4d1c-8163-975328ee8e80";
     const sessionId = "dfMessenger-9777522";
     const widgetsAvailable = config.widgets.map((w) => w.widgetName);
+    axios.get("http://localhost:3333/intelApi").then((response) => {
+      console.log("response from get demo api => ", response);
+      const user = response.data.user;
+      const contract = response.data.contracts.template_39;
+      console.log("userInfo==>", user);
+      console.log("ContractInfo==>", contract);
+    });
 
     axios
       .post(
@@ -44,6 +51,9 @@ class ActionProvider {
       )
       .then(
         (response) => {
+          console.log("agentID==>", agentId);
+          console.log("sessionID==>", sessionId);
+
           console.log(
             "response from action provider handle message => ",
             response

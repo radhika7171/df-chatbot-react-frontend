@@ -1,8 +1,9 @@
+import { createChatBotMessage } from "react-chatbot-kit";
 import Chips from "./components/Chips";
 
 const config = {
   botName: "Arty Bot",
-  initialMessages: [], //[createChatBotMessage(`Hello world`)],
+  initialMessages: [createChatBotMessage(`Hello, how are you`)],
   state: {
     widgetConfig: {},
   },
@@ -14,5 +15,4 @@ const config = {
     },
   ],
 };
-
 export default config;

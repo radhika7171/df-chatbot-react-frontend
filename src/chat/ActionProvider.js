@@ -1,5 +1,5 @@
 import axios from "axios";
-import config from "./config";
+import { sessionId } from "../session";
 
 class ActionProvider {
   constructor(
@@ -17,108 +17,37 @@ class ActionProvider {
     this.createClientMessage = createCustomMessage;
   }
 
-  handleMessage(message) {
-    console.log("handle message reached!", message);
-    const agentId = "a9ef8e65-f0b1-4d1c-8163-975328ee8e80";
-    const sessionId = "dfMessenger-9777522";
-    const widgetsAvailable = config.widgets.map((w) => w.widgetName);
-    axios.get("http://localhost:3333/intelApi").then((response) => {
-      console.log("response from get demo api => ", response);
-      const user = response.data.user;
-      const contract = response.data.contracts.template_39;
-      console.log("userInfo==>", user);
-      console.log("ContractInfo==>", contract);
-    });
-
+  fetcheduserDataFromNode(message) {
     axios
-      .post(
-        "https://dialogflow.cloud.google.com/v1/cx/locations/us-central1/integrations/messenger/webhook/" +
-          agentId +
-          "/sessions/" +
-          sessionId +
-          ":detectIntent",
-        {
-          queryInput: {
-            text: {
-              text: message,
-            },
-            languageCode: "en",
-          },
+      .get("http://localhost:3333/intelApi", {
+        params: {
+          message,
+          sessionId,
         },
-        {
-          transformResponse: (r) => JSON.parse(r.replace(")]}'\n", "")),
-        }
-      )
-      .then(
-        (response) => {
-          console.log("agentID==>", agentId);
-          console.log("sessionID==>", sessionId);
-
-          console.log(
-            "response from action provider handle message => ",
-            response
-          );
+      })
+      .then((response) => {
+        for (const element of response.data[0]?.queryResult?.responseMessages) {
           let text = null;
-          let widget = null;
-          let widgetConfig = {};
+          console.log("sessionId=>", sessionId);
 
-          for (let index in response.data.queryResult.responseMessages) {
-            let botResponseMessage =
-              response.data.queryResult.responseMessages[index];
-            console.log(botResponseMessage);
-            if (typeof botResponseMessage["text"] != "undefined")
-              text = botResponseMessage.text.redactedText[0];
+          // Condition when the response message type is "text"
+          if (element?.message === "text") {
+            text = element?.text?.text[0];
+          }
 
-            if (typeof botResponseMessage["payload"] != "undefined") {
-              // Custom Widgets
-              if (
-                typeof botResponseMessage.payload["widget"] != "undefined" &&
-                widgetsAvailable.indexOf(botResponseMessage.payload.widget) !==
-                  -1
-              ) {
-                widget = botResponseMessage.payload.widget;
-                if (
-                  typeof botResponseMessage.payload["widgetConfig"] !=
-                  "undefined"
-                )
-                  widgetConfig = botResponseMessage.payload.widgetConfig;
-              }
-
-              // Google Rich Content
-              if (
-                typeof botResponseMessage.payload["richContent"] != "undefined"
-              ) {
-                for (let ri in botResponseMessage.payload["richContent"]) {
-                  let richContent = botResponseMessage.payload.richContent[ri];
-                  if (
-                    typeof richContent[0] != "undefined" &&
-                    typeof richContent[0]["type"] != "undefined" &&
-                    widgetsAvailable.indexOf(richContent[0]["type"]) !== -1
-                  ) {
-                    widget = richContent[0]["type"];
-                    widgetConfig = richContent[0];
-                    console.log(widget, widgetConfig);
-                  }
-                }
-              }
-            }
+          // Condition when the response message type is "payload"
+          if (element?.message === "payload") {
+            return;
           }
 
           let botMessage = null;
-          if (widget != null)
-            botMessage = this.createChatBotMessage(text, { widget: widget });
-          else botMessage = this.createChatBotMessage(text);
-
+          botMessage = this.createChatBotMessage(text);
           this.setState((prev) => ({
             ...prev,
             messages: [...prev.messages, botMessage],
-            widgetConfig: widgetConfig,
           }));
-        },
-        (error) => {
-          console.log("some error occurred => ", error);
         }
-      );
+      });
   }
 }
 

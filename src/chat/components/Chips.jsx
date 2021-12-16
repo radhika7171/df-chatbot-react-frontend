@@ -3,7 +3,6 @@ import "./Chips.css";
 
 const Chips = (props) => {
   const { options } = props.widgetConfig;
-  console.log("options==>", options);
 
   return (
     <div className="ml-5">

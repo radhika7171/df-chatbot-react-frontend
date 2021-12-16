@@ -28,24 +28,41 @@ class ActionProvider {
       .then((response) => {
         for (const element of response.data[0]?.queryResult?.responseMessages) {
           let text = null;
-          console.log("sessionId=>", sessionId);
+          let payload = null;
+          let options = [];
 
           // Condition when the response message type is "text"
           if (element?.message === "text") {
             text = element?.text?.text[0];
+            const botMessage = this.createChatBotMessage(text);
+            this.setState((prev) => ({
+              ...prev,
+              messages: [...prev.messages, botMessage],
+            }));
           }
 
           // Condition when the response message type is "payload"
           if (element?.message === "payload") {
-            return;
+            payload =
+              element?.payload?.fields?.richContent?.listValue?.values[0]
+                ?.listValue?.values[0]?.structValue?.fields?.options?.listValue
+                ?.values;
+            for (const element of payload) {
+              const field = element?.structValue?.fields;
+              options.push(field);
+            }
+            const botMessage = this.createChatBotMessage(
+              "Please select one of the chip options",
+              {
+                widget: "chips",
+              }
+            );
+            this.setState((prev) => ({
+              ...prev,
+              messages: [...prev.messages, botMessage],
+              widgetConfig: { options },
+            }));
           }
-
-          let botMessage = null;
-          botMessage = this.createChatBotMessage(text);
-          this.setState((prev) => ({
-            ...prev,
-            messages: [...prev.messages, botMessage],
-          }));
         }
       });
   }

@@ -2,22 +2,20 @@ import React from "react";
 import "./Chips.css";
 
 const Chips = (props) => {
-  const { actionProvider } = props;
   const { options } = props.widgetConfig;
-  console.log("options =>", options);
+  console.log("options==>", options);
 
   return (
     <div className="ml-5">
-      {options?.map((opt) => (
+      {options?.map((opt, index) => (
         <button
           className="chip"
-          key={opt.text}
+          key={index}
           onClick={() => {
-            window.open(opt.link);
-            actionProvider.handleMessage(opt.text);
+            window.open(opt.link.stringValue);
           }}
         >
-          {opt.text}
+          {opt.text.stringValue.toUpperCase()}
         </button>
       ))}
     </div>

@@ -18,6 +18,7 @@ class ActionProvider {
   }
 
   fetcheduserDataFromNode(message) {
+    console.log("apiCalled==>");
     axios
       .get("http://localhost:3333/intelApi", {
         params: {
@@ -29,10 +30,15 @@ class ActionProvider {
         for (const element of response.data[0]?.queryResult?.responseMessages) {
           let text = null;
           let payload = null;
+          let ObjbuttonPayload = null;
+          let buttonPayload = [];
+          let buttons = [];
           let options = [];
+          console.log("resonse from DF", response);
 
           // Condition when the response message type is "text"
           if (element?.message === "text") {
+            console.log("message received");
             text = element?.text?.text[0];
             const botMessage = this.createChatBotMessage(text);
             this.setState((prev) => ({
@@ -40,29 +46,35 @@ class ActionProvider {
               messages: [...prev.messages, botMessage],
             }));
           }
-
           // Condition when the response message type is "payload"
-          if (element?.message === "payload") {
-            payload =
+          //button
+          if (
+            element?.payload?.fields?.richContent?.listValue?.values[0]
+              .structValue?.fields?.type.stringValue === "button"
+          ) {
+            console.log("payloadbutton");
+            ObjbuttonPayload =
               element?.payload?.fields?.richContent?.listValue?.values[0]
-                ?.listValue?.values[0]?.structValue?.fields?.options?.listValue
-                ?.values;
-            for (const element of payload) {
-              const field = element?.structValue?.fields;
-              options.push(field);
+                .structValue?.fields;
+            //  object button saved in array
+            buttonPayload = [ObjbuttonPayload];
+            for (const element of buttonPayload) {
+              buttons.push(element);
             }
             const botMessage = this.createChatBotMessage(
-              "Please select one of the chip options",
+              "Please select one of the button options",
               {
-                widget: "chips",
+                widget: "buttons",
               }
             );
             this.setState((prev) => ({
               ...prev,
               messages: [...prev.messages, botMessage],
-              widgetConfig: { options },
+              widgetConfig: { buttons },
             }));
           }
+
+          //chips
         }
       });
   }

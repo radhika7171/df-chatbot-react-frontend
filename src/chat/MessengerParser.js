@@ -6,6 +6,7 @@ class MessageParser {
 
   parse(message) {
     // this.actionProvider.handleMessage(message);
+    console.log("msg parser");
     this.actionProvider.fetcheduserDataFromNode(message);
   }
 }

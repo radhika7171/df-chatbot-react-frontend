@@ -5,19 +5,18 @@ import "./Buttons.css";
 const Buttons = (props) => {
   const { buttons } = props.widgetConfig;
   let savedOption = null;
-  console.log("button=>", buttons);
 
   return (
     <div className="button-comp">
-      {buttons?.map((opt, index) => (
+      {buttons?.map((option, index) => (
         <button
           className="button"
           key={index}
           onClick={() => {
-            savedOption = opt.text.stringValue;
+            savedOption = option.text.stringValue;
           }}
         >
-          {opt.text.stringValue.toUpperCase()}
+          {option.text.stringValue.toUpperCase()}
         </button>
       ))}
     </div>

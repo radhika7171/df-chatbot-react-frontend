@@ -18,7 +18,6 @@ class ActionProvider {
   }
 
   fetcheduserDataFromNode(message) {
-    console.log("apiCalled==>");
     axios
       .get("http://localhost:3333/intelApi", {
         params: {
@@ -34,11 +33,11 @@ class ActionProvider {
           let buttonPayload = [];
           let buttons = [];
           let options = [];
-          console.log("resonse from DF", response);
+          console.log("resonse from DF", response.data[0].queryResult);
 
           // Condition when the response message type is "text"
           if (element?.message === "text") {
-            console.log("message received");
+            console.log("message block==>");
             text = element?.text?.text[0];
             const botMessage = this.createChatBotMessage(text);
             this.setState((prev) => ({
@@ -47,34 +46,77 @@ class ActionProvider {
             }));
           }
           // Condition when the response message type is "payload"
-          //button
-          if (
-            element?.payload?.fields?.richContent?.listValue?.values[0]
-              .structValue?.fields?.type.stringValue === "button"
-          ) {
-            console.log("payloadbutton");
-            ObjbuttonPayload =
-              element?.payload?.fields?.richContent?.listValue?.values[0]
-                .structValue?.fields;
-            //  object button saved in array
-            buttonPayload = [ObjbuttonPayload];
-            for (const element of buttonPayload) {
-              buttons.push(element);
-            }
-            const botMessage = this.createChatBotMessage(
-              "Please select one of the button options",
-              {
-                widget: "buttons",
-              }
-            );
-            this.setState((prev) => ({
-              ...prev,
-              messages: [...prev.messages, botMessage],
-              widgetConfig: { buttons },
-            }));
-          }
 
-          //chips
+          // payload buttons block
+
+          if (element?.message === "payload") {
+            console.log("payload block==>");
+            if (
+              element?.payload?.fields?.richContent?.listValue?.values[0]
+                ?.listValue?.values[0].structValue?.fields?.type.stringValue ===
+              "button"
+            ) {
+              console.log("seprate button block==>");
+              ObjbuttonPayload =
+                element?.payload?.fields?.richContent?.listValue?.values[0]
+                  .listValue?.values[0]?.structValue?.fields;
+
+              //  object button saved in array
+              buttonPayload = [ObjbuttonPayload];
+
+              for (const element of buttonPayload) {
+                const options = element?.options?.listValue?.values;
+
+                for (const element of options) {
+                  const fields = element?.structValue?.fields;
+                  buttons.push(fields);
+                }
+                const payloadType = element.type;
+                console.log("payloadType==>", payloadType);
+                console.log("buttons ===>", buttons);
+              }
+              const botMessage = this.createChatBotMessage(
+                "Choose type of beat license you have !",
+                {
+                  widget: "buttons",
+                }
+              );
+              this.setState((prev) => ({
+                ...prev,
+                messages: [...prev.messages, botMessage],
+                widgetConfig: { buttons },
+              }));
+            }
+
+            // Payload chips block
+
+            if (
+              element?.payload?.fields?.richContent?.listValue?.values[0]
+                ?.listValue?.values[0]?.structValue?.fields?.type
+                ?.stringValue === "chips"
+            ) {
+              console.log("seprate chips block==>");
+              payload =
+                element?.payload?.fields?.richContent?.listValue?.values[0]
+                  ?.listValue?.values[0]?.structValue?.fields?.options
+                  ?.listValue?.values;
+              for (const element of payload) {
+                const field = element?.structValue?.fields;
+                options.push(field);
+              }
+              const botMessage = this.createChatBotMessage(
+                "Please select one of the chip options",
+                {
+                  widget: "chips",
+                }
+              );
+              this.setState((prev) => ({
+                ...prev,
+                messages: [...prev.messages, botMessage],
+                widgetConfig: { options },
+              }));
+            }
+          }
         }
       });
   }

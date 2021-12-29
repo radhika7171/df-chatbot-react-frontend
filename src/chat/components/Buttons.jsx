@@ -1,5 +1,4 @@
 import React from "react";
-import axios from "axios";
 import "./Chips.css";
 import "./Buttons.css";
 

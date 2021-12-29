@@ -1,17 +1,30 @@
 .chip {
   height: 50px;
-  width: 100px;
-  border-radius: 20%;
-  justify-content: center;
-  align-items: center;
-  font-size: 13px;
-  font-style: normal;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-weight: 40;
-  background-color: rgb(160, 137, 137);
-  color: whitesmoke;
-  border-right: 20px;
-  padding: 2px;
-  margin-left: 20px;
-  margin-bottom: 5px;
+  width: 112px;
+  display: inline-block;
+  background-color: rgb(222, 230, 241);
+  padding: 0.75rem 1.25rem;
+  border-radius: 2rem;
+  color: black;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
+  transition: all 0.5s;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  cursor: grab;
+}
+.chip:hover {
+  background-color: rgb(133, 188, 236);
+  width: 200px;
+}
+
+.chip {
+  text-shadow: 0.5px 0.5px rgb(245, 204, 155);
+}
+.chip {
+  box-shadow: 3px 3px 3px 3px lightslategrey;
 }

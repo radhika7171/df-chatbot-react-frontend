@@ -1,0 +1,17 @@
+.button {
+  height: 50px;
+  width: 100px;
+  border-radius: 60%;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+  font-style: normal;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 700;
+  background-color: beige;
+  color: rgb(73, 141, 168);
+  border-right: 20px;
+  padding: 2px;
+  margin-left: 20px;
+  margin-bottom: 5px;
+}

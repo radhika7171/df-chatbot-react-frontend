@@ -1,5 +1,6 @@
 import { createChatBotMessage } from "react-chatbot-kit";
 import Chips from "./components/Chips";
+import Buttons from "./components/Buttons";
 
 const config = {
   botName: "Arty Bot",
@@ -11,6 +12,11 @@ const config = {
     {
       widgetName: "chips",
       widgetFunc: (props) => <Chips {...props} />,
+      mapStateToProps: ["widgetConfig"],
+    },
+    {
+      widgetName: "buttons",
+      widgetFunc: (props) => <Buttons {...props} />,
       mapStateToProps: ["widgetConfig"],
     },
   ],

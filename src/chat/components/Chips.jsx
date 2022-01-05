@@ -2,11 +2,11 @@ import React from "react";
 import "./Chips.css";
 
 const Chips = (props) => {
-  const { Chips } = props.widgetConfig;
+  const { chips } = props.widgetConfig;
 
   return (
     <div className="ml-5">
-      {Chips?.map((opt, index) => (
+      {chips?.map((opt, index) => (
         <button
           className="chip"
           key={index}

@@ -10,16 +10,18 @@ const Buttons = (props) => {
   return (
     <div className="button-comp">
       {buttons?.map((option, index) => (
-        <button
-          className="button"
-          key={index}
-          onClick={() => {
-            message = option.text.stringValue;
-            props.actionProvider.SendReactRequest_and_handleResponse(message);
-          }}
-        >
-          {option.text.stringValue.toUpperCase()}
-        </button>
+        <div key={index}>
+          <button
+            className="button"
+            onClick={() => {
+              message = option.text.stringValue;
+              props.actionProvider.handleMessage(message);
+            }}
+          >
+            {option.text.stringValue.toUpperCase()}
+          </button>
+          <br />
+        </div>
       ))}
     </div>
   );

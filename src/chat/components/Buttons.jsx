@@ -15,7 +15,7 @@ const Buttons = (props) => {
           key={index}
           onClick={() => {
             message = option.text.stringValue;
-            props.actionProvider.fetcheduserDataFromNode(message);
+            props.actionProvider.SendReactRequest_and_handleResponse(message);
           }}
         >
           {option.text.stringValue.toUpperCase()}

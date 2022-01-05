@@ -4,10 +4,9 @@ class MessageParser {
     this.state = state;
   }
 
-  parse(message) {
+  parse(InputReact) {
     // this.actionProvider.handleMessage(message);
-    console.log("msg parser");
-    this.actionProvider.fetcheduserDataFromNode(message);
+    this.actionProvider.SendReactRequest_and_handleResponse(InputReact);
   }
 }
 

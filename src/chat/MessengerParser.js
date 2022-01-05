@@ -4,9 +4,10 @@ class MessageParser {
     this.state = state;
   }
 
-  parse(InputReact) {
+  // This message string is coming from React-chat-bot kit.
+  parse(inputMessageString) {
     // this.actionProvider.handleMessage(message);
-    this.actionProvider.SendReactRequest_and_handleResponse(InputReact);
+    this.actionProvider.handleMessage(inputMessageString);
   }
 }
 

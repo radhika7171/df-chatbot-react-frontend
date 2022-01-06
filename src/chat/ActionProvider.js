@@ -26,7 +26,9 @@ class ActionProvider {
         },
       })
       .then((response) => {
-        response.data[0]?.queryResult?.responseMessages.forEach(
+        console.log("response==>", response);
+        // console.log("response==>", response.data?.queryResult);
+        response.data[0]?.queryResult.responseMessages.forEach(
           (responseMessage) => {
             const messageType = responseMessage?.message;
             // Condition when the response message type is "text"
@@ -104,53 +106,6 @@ class ActionProvider {
       widgetConfig: { chips: chipsWidgetArray },
     }));
   }
-
-  TextResponse(text) {
-    const botMessage = this.createChatBotMessage(text);
-    this.setState((prev) => ({
-      ...prev,
-      messages: [...prev.messages, botMessage],
-    }));
-  }
-
-  ButtonPayloadResponse(buttons) {
-    const botMessage = this.createChatBotMessage(
-      "Choose type of beat license you have !",
-      {
-        widget: "buttons",
-      }
-    );
-    this.setState((prev) => ({
-      ...prev,
-      messages: [...prev.messages, botMessage],
-      widgetConfig: { buttons },
-    }));
-  }
-
-  ChipPayloadResponse(Chips) {
-    const botMessage = this.createChatBotMessage(
-      "Please select one of the chip options",
-      {
-        widget: "chips",
-      }
-    );
-    this.setState((prev) => ({
-      ...prev,
-      messages: [...prev.messages, botMessage],
-      widgetConfig: { Chips },
-    }));
-  }
 }
 
 export default ActionProvider;
-
-// console to check node response and parameters
-
-// console.log(
-//   "resonse parameters Node",
-//   response.data[0].queryResult.parameters.fields
-// );
-// console.log(
-//   "resonse Message Node",
-//   response.data[0].queryResult.responseMessages
-// );

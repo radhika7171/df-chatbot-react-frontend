@@ -6,7 +6,6 @@ class MessageParser {
 
   // This message string is coming from React-chat-bot kit.
   parse(inputMessageString) {
-    // this.actionProvider.handleMessage(message);
     this.actionProvider.handleMessage(inputMessageString);
   }
 }

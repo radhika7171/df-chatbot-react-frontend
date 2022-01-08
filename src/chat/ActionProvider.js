@@ -25,85 +25,60 @@ class ActionProvider {
           sessionId,
         },
       })
-      .then((response) => {
-        console.log("response==>", response);
-        // console.log("response==>", response.data?.queryResult);
-        response.data[0]?.queryResult.responseMessages.forEach(
-          (responseMessage) => {
-            const messageType = responseMessage?.message;
-            // Condition when the response message type is "text"
-            if (messageType === "text") {
-              const text = responseMessage?.text?.text[0];
-              this.createTextMessage(text);
-            }
-            // Condition when the response message type is "payload"
-            if (messageType === "payload") {
-              const payload =
-                responseMessage?.payload?.fields?.richContent?.listValue
-                  ?.values[0]?.listValue?.values[0].structValue?.fields;
+      .then((res) => {
+        const response = res.data[0];
+        console.log("response>>>>>>", response);
 
-              // payload buttons block
-              if (payload?.type?.stringValue === "button") {
-                const buttonsArray = [payload];
-                this.createButtonWidget(buttonsArray);
-              }
+        response?.forEach((message) => {
+          const messagePayloadType =
+            message?.payload?.fields?.richContent?.listValue?.values[0]
+              ?.listValue?.values[0].structValue?.fields?.type?.stringValue;
+          const messagePayload =
+            message?.payload?.fields?.richContent?.listValue?.values[0]
+              ?.listValue?.values[0].structValue?.fields?.options.listValue
+              .values;
 
-              // Payload chips block
-              if (payload?.type?.stringValue === "chips") {
-                const chipsArray = payload?.options?.listValue?.values;
-                this.createChipWidget(chipsArray);
-              }
-            }
+          // Message is text
+          if (message?.message === "text") {
+            const messageText = message?.text?.text[0];
+            this.createTextMessage(messageText);
           }
-        );
+          // Message is Button
+          if (messagePayloadType === "button") {
+            this.createPayloadWidget(messagePayload, messagePayloadType);
+          }
+
+          // Message is Chip
+          if (messagePayloadType === "chips") {
+            this.createPayloadWidget(messagePayload, messagePayloadType);
+          }
+        });
       });
   }
 
-  createTextMessage(text) {
-    const botMessage = this.createChatBotMessage(text);
+  createPayloadWidget(messagePayload, messagePayloadType) {
+    console.log("payload>>>>");
+    const messagePayloadArray = [];
+    messagePayload.forEach((message) => {
+      messagePayloadArray.push(message?.structValue?.fields);
+    });
+    const botMessage = this.createChatBotMessage("", {
+      widget: messagePayloadType,
+    });
+    console.log("messagePayload>>>>", botMessage.widget);
     this.setState((prev) => ({
       ...prev,
       messages: [...prev.messages, botMessage],
+      widgetConfig: { widgetPayloadArray: messagePayloadArray },
     }));
   }
 
-  createButtonWidget(buttonsArray) {
-    let buttons = [];
-    buttonsArray.forEach((button) => {
-      const options = button?.options?.listValue?.values;
-      options.forEach((option) => {
-        const fields = option?.structValue?.fields;
-        buttons.push(fields);
-      });
-      const botMessage = this.createChatBotMessage(
-        "Please select one of the chip options !",
-        {
-          widget: "buttons",
-        }
-      );
-      this.setState((prev) => ({
-        ...prev,
-        messages: [...prev.messages, botMessage],
-        widgetConfig: { buttons },
-      }));
-    });
-  }
-
-  createChipWidget(chipsArray) {
-    const chipsWidgetArray = [];
-    chipsArray.forEach((chips) =>
-      chipsWidgetArray.push(chips?.structValue?.fields)
-    );
-    const botMessage = this.createChatBotMessage(
-      "Please select one of the chip options",
-      {
-        widget: "chips",
-      }
-    );
+  createTextMessage(messageText) {
+    console.log("text function block called>>>>>");
+    const botMessage = this.createChatBotMessage(messageText);
     this.setState((prev) => ({
       ...prev,
       messages: [...prev.messages, botMessage],
-      widgetConfig: { chips: chipsWidgetArray },
     }));
   }
 }

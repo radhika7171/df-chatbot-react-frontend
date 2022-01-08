@@ -15,7 +15,7 @@ const config = {
       mapStateToProps: ["widgetConfig"],
     },
     {
-      widgetName: "buttons",
+      widgetName: "button",
       widgetFunc: (props) => <Buttons {...props} />,
       mapStateToProps: ["widgetConfig"],
     },

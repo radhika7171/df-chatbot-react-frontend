@@ -4,8 +4,8 @@ import "./Chips.css";
 import "./Buttons.css";
 
 const Buttons = (props) => {
-  const { widgetPayloadArray } = props.widgetConfig;
-  let message = null;
+  const { button } = props.widgetConfig;
+  const widgetPayloadArray = button;
 
   return (
     <div className="button-comp">
@@ -14,8 +14,8 @@ const Buttons = (props) => {
           <button
             className="button"
             onClick={() => {
-              message = option.text.stringValue;
-              props.actionProvider.handleMessage(message);
+              // message = option.text.stringValue;
+              props.actionProvider.handleMessage(option.text.stringValue);
             }}
           >
             {option.text.stringValue.toUpperCase()}

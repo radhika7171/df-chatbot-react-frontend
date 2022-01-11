@@ -2,8 +2,8 @@ import React from "react";
 import "./Chips.css";
 
 const Chips = (props) => {
-  const { widgetPayloadArray } = props.widgetConfig;
-
+  const { chips } = props.widgetConfig;
+  const widgetPayloadArray = chips;
   return (
     <div className="ml-5">
       {widgetPayloadArray?.map((opt, index) => (

@@ -27,54 +27,82 @@ class ActionProvider {
       })
       .then((res) => {
         const response = res.data[0];
-        console.log("response>>>>>>", response);
-
         response?.forEach((message) => {
-          const messagePayloadType =
-            message?.payload?.fields?.richContent?.listValue?.values[0]
-              ?.listValue?.values[0].structValue?.fields?.type?.stringValue;
-          const messagePayload =
-            message?.payload?.fields?.richContent?.listValue?.values[0]
-              ?.listValue?.values[0].structValue?.fields?.options.listValue
-              .values;
+          console.log("message => ", message);
 
           // Message is text
           if (message?.message === "text") {
             const messageText = message?.text?.text[0];
-            this.createTextMessage(messageText);
-          }
-          // Message is Button
-          if (messagePayloadType === "button") {
-            this.createPayloadWidget(messagePayload, messagePayloadType);
+            this.createPayloadWidget(messageText);
+          } else if (message?.message === "payload") {
+            const messagePayloadType =
+              message?.payload?.fields?.richContent?.listValue?.values[0]
+                ?.listValue?.values[0].structValue?.fields?.type?.stringValue;
+
+            const messagePayload =
+              message?.payload?.fields?.richContent?.listValue?.values[0]
+                ?.listValue?.values[0].structValue?.fields?.options.listValue
+                .values;
+
+            // Message is Button or Chips
+            if (
+              messagePayloadType === "button" ||
+              messagePayloadType === "chips"
+            ) {
+              this.createPayloadWidget(
+                "Please choose one:",
+                messagePayload,
+                messagePayloadType
+              );
+            }
           }
 
           // Message is Chip
-          if (messagePayloadType === "chips") {
+          /* if (messagePayloadType === "chips") {
+            console.log("chips called!");
             this.createPayloadWidget(messagePayload, messagePayloadType);
-          }
+          } */
         });
       });
   }
 
-  createPayloadWidget(messagePayload, messagePayloadType) {
-    console.log("payload>>>>");
+  createPayloadWidget(
+    messageText,
+    messagePayload = null,
+    messagePayloadType = null
+  ) {
     const messagePayloadArray = [];
-    messagePayload.forEach((message) => {
+    messagePayload?.forEach((message) => {
       messagePayloadArray.push(message?.structValue?.fields);
     });
-    const botMessage = this.createChatBotMessage("", {
+
+    const botMessage = this.createChatBotMessage(messageText, {
       widget: messagePayloadType,
     });
-    console.log("messagePayload>>>>", botMessage.widget);
-    this.setState((prev) => ({
-      ...prev,
-      messages: [...prev.messages, botMessage],
-      widgetConfig: { widgetPayloadArray: messagePayloadArray },
-    }));
+
+    this.setState((prev) => {
+      let stateObject = {
+        ...prev,
+        messages: [...prev.messages, botMessage],
+      };
+
+      if (messagePayloadType === "chips") {
+        stateObject.widgetConfig = {
+          ...prev.widgetConfig,
+          chips: messagePayloadArray,
+        };
+      } else if (messagePayloadType === "button") {
+        stateObject.widgetConfig = {
+          ...prev.widgetConfig,
+          button: messagePayloadArray,
+        };
+      }
+
+      return stateObject;
+    });
   }
 
   createTextMessage(messageText) {
-    console.log("text function block called>>>>>");
     const botMessage = this.createChatBotMessage(messageText);
     this.setState((prev) => ({
       ...prev,

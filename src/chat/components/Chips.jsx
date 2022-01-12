@@ -11,6 +11,7 @@ const Chips = (props) => {
           className="chip"
           key={index}
           onClick={() => {
+            props.actionProvider.handleMessage(opt.text.stringValue);
             window.open(opt.link.stringValue);
           }}
         >

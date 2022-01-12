@@ -26,48 +26,38 @@ class ActionProvider {
         },
       })
       .then((res) => {
+        console.log("response>>>>>>>", res);
         const response = res.data[0];
         response?.forEach((message) => {
           console.log("message => ", message);
 
-          // Message is text
-          if (message?.message === "text") {
-            const messageText = message?.text?.text[0];
-            this.createPayloadWidget(messageText);
-          } else if (message?.message === "payload") {
-            const messagePayloadType =
-              message?.payload?.fields?.richContent?.listValue?.values[0]
-                ?.listValue?.values[0].structValue?.fields?.type?.stringValue;
+          const messageText = message?.text?.text[0];
+          const messagePayloadType =
+            message?.payload?.fields?.richContent?.listValue?.values[0]
+              ?.listValue?.values[0].structValue?.fields?.type?.stringValue;
 
-            const messagePayload =
-              message?.payload?.fields?.richContent?.listValue?.values[0]
-                ?.listValue?.values[0].structValue?.fields?.options.listValue
-                .values;
+          const messagePayload =
+            message?.payload?.fields?.richContent?.listValue?.values[0]
+              ?.listValue?.values[0].structValue?.fields?.options.listValue
+              .values;
 
-            // Message is Button or Chips
-            if (
-              messagePayloadType === "button" ||
-              messagePayloadType === "chips"
-            ) {
-              this.createPayloadWidget(
-                "Please choose one:",
-                messagePayload,
-                messagePayloadType
-              );
-            }
+          if (
+            message?.message === "text" ||
+            messagePayloadType === "button" ||
+            messagePayloadType === "chips"
+          ) {
+            this.createPayloadWidget(
+              messageText,
+              messagePayload,
+              messagePayloadType
+            );
           }
-
-          // Message is Chip
-          /* if (messagePayloadType === "chips") {
-            console.log("chips called!");
-            this.createPayloadWidget(messagePayload, messagePayloadType);
-          } */
         });
       });
   }
 
   createPayloadWidget(
-    messageText,
+    messageText = null,
     messagePayload = null,
     messagePayloadType = null
   ) {
@@ -79,13 +69,12 @@ class ActionProvider {
     const botMessage = this.createChatBotMessage(messageText, {
       widget: messagePayloadType,
     });
-
     this.setState((prev) => {
       let stateObject = {
         ...prev,
         messages: [...prev.messages, botMessage],
       };
-
+      console.log("perv>>", prev);
       if (messagePayloadType === "chips") {
         stateObject.widgetConfig = {
           ...prev.widgetConfig,
@@ -100,14 +89,6 @@ class ActionProvider {
 
       return stateObject;
     });
-  }
-
-  createTextMessage(messageText) {
-    const botMessage = this.createChatBotMessage(messageText);
-    this.setState((prev) => ({
-      ...prev,
-      messages: [...prev.messages, botMessage],
-    }));
   }
 }
 

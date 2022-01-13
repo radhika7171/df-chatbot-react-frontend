@@ -1,3 +1,4 @@
+import { ContactlessOutlined } from "@material-ui/icons";
 import axios from "axios";
 import { sessionId } from "../session";
 
@@ -29,9 +30,8 @@ class ActionProvider {
         console.log("response>>>>>>>", res);
         const response = res.data[0];
         response?.forEach((message) => {
-          console.log("message => ", message);
-
           const messageText = message?.text?.text[0];
+
           const messagePayloadType =
             message?.payload?.fields?.richContent?.listValue?.values[0]
               ?.listValue?.values[0].structValue?.fields?.type?.stringValue;
@@ -46,7 +46,7 @@ class ActionProvider {
             messagePayloadType === "button" ||
             messagePayloadType === "chips"
           ) {
-            this.createPayloadWidget(
+            this.createResponseTextandPayloadWidget(
               messageText,
               messagePayload,
               messagePayloadType
@@ -56,12 +56,17 @@ class ActionProvider {
       });
   }
 
-  createPayloadWidget(
-    messageText = null,
-    messagePayload = null,
-    messagePayloadType = null
+  createResponseTextandPayloadWidget(
+    messageText,
+    messagePayload,
+    messagePayloadType
   ) {
     const messagePayloadArray = [];
+    //@todo: implement multilingual label
+    let option = "choose one of the option:";
+    if (messageText === undefined) {
+      messageText = option;
+    }
     messagePayload?.forEach((message) => {
       messagePayloadArray.push(message?.structValue?.fields);
     });
@@ -74,7 +79,6 @@ class ActionProvider {
         ...prev,
         messages: [...prev.messages, botMessage],
       };
-      console.log("perv>>", prev);
       if (messagePayloadType === "chips") {
         stateObject.widgetConfig = {
           ...prev.widgetConfig,

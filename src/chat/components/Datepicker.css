@@ -1,0 +1,16 @@
+.date {
+  color: black;
+  text-shadow: black;
+  font-weight: 400;
+  /* background: cadetblue; */
+  background-color: darkgray;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  /* color: #fff; */
+  font-weight: medium;
+  position: relative;
+  /* width: 184.5px; */
+  /* margin-left: auto; */
+  text-align: left;
+}

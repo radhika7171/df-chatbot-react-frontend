@@ -1,4 +1,3 @@
-import { ContactlessOutlined } from "@material-ui/icons";
 import axios from "axios";
 import { sessionId } from "../session";
 
@@ -27,8 +26,9 @@ class ActionProvider {
         },
       })
       .then((res) => {
-        console.log("response>>>>>>>", res);
         const response = res.data[0];
+        console.log("response>>>>>>>", response);
+
         response?.forEach((message) => {
           const messageText = message?.text?.text[0];
 
@@ -43,8 +43,10 @@ class ActionProvider {
 
           if (
             message?.message === "text" ||
+            messagePayloadType === "autosuggest" ||
             messagePayloadType === "button" ||
-            messagePayloadType === "chips"
+            messagePayloadType === "chips" ||
+            messagePayloadType === "datepicker"
           ) {
             this.createResponseTextandPayloadWidget(
               messageText,
@@ -63,7 +65,7 @@ class ActionProvider {
   ) {
     const messagePayloadArray = [];
     //@todo: implement multilingual label
-    let option = "choose one of the option:";
+    let option = "Select from below :-";
     if (messageText === undefined) {
       messageText = option;
     }
@@ -79,10 +81,22 @@ class ActionProvider {
         ...prev,
         messages: [...prev.messages, botMessage],
       };
+      if (messagePayloadType === "autosuggest") {
+        stateObject.widgetConfig = {
+          ...prev.widgetConfig,
+          autosuggest: messagePayloadArray,
+        };
+      }
       if (messagePayloadType === "chips") {
         stateObject.widgetConfig = {
           ...prev.widgetConfig,
           chips: messagePayloadArray,
+        };
+      }
+      if (messagePayloadType === "datepicker") {
+        stateObject.widgetConfig = {
+          ...prev.widgetConfig,
+          datepicker: messagePayloadArray,
         };
       } else if (messagePayloadType === "button") {
         stateObject.widgetConfig = {
